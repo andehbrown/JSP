@@ -1,3 +1,10 @@
+models/
+*.csv
+*.pkl
+*.gguf
+*.xlsx
+*.zip
+.DS_Store
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

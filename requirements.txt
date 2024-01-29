@@ -1,0 +1,8 @@
+pandas
+sentence-transformers
+# llama-cpp-python
+odfpy
+pymupdf
+langchain
+ragas
+datasets

@@ -1,0 +1,39 @@
+# Path parameters
+
+VECTORSTORE_PATH : 'data/vectorstore.pkl'
+CORPUSSTORE_PATH : 'data/corpusstore.pkl'
+TEST_QUESTIONS_PATH : 'eval/questions.csv'
+TEST_DATA_PATH : 'eval/testdata.pkl'
+EVAL_RESULTS_PATH : 'eval/evalresults.pkl'
+JSP_FOLDER : 'documents/'
+
+# Retriever parameters
+
+CHUNK_SIZE : 1000
+NUM_CHUNKS : 9
+
+# Generator parameters
+
+TEMPERATURE : 0.2
+TOP_P : 0.1
+MIN_P : 0.05
+
+# Model parameters
+
+MODEL : 'models/mistral-7b-instruct-v0.2.Q4_K_M.gguf'   #Mistral Instruct v0.2 4 bit quant
+# MODEL : 'models/mistral-7b-instruct-v0.2.Q5_K_M.gguf' #Mistral Instruct v0.2 5 bit quant
+# MODEL : 'models/mistral-7b-instruct-v0.1.Q5_K_S.gguf' #Mistral 7B instruct 5-bit quant
+# MODEL : 'models/mistral-7b-instruct-v0.1.Q4_K_M.gguf' #Mistral 7B instruct 4-bit quant
+# MODEL : 'models/tinyllama-1.1b-1t-openorca.Q6_K.gguf' #TinyLlama 1.1B 6-bit quant
+# MODEL : 'models/mistrallite.Q4_K_M.gguf'              #MistralLite AWS 4 bit quant
+# MODEL : 'models/mistrallite.Q5_K_M.gguf'              #MistralLite AWS 5 bit quant
+# MODEL : 'models/mixtral_11bx2_moe_19b.Q4_K_M.gguf'    #Mistral 11bx2 4 bit quant
+# MODEL : 'models/mixtral_11bx2_moe_19b.Q5_K_S.gguf'    #Mistral 11bx2 5 bit quant
+# MODEL : 'models/solar-10.7b-instruct-v1.0.Q4_K_M.gguf'#Solar 10.7b Instruct 4 bit quant
+# MODEL : 'models/solar-10.7b-instruct-v1.0.Q5_K_M.gguf'#Solar 10.7b Instruct 5 bit quant
+CONTEXT_LENGTH : 8192
+VECTOR_ENCODER : 'BAAI/bge-large-en-v1.5' # Slowest
+# VECTOR_ENCODER : 'BAAI/llm-embedder'
+# VECTOR_ENCODER : 'all-mpnet-base-v2' # Slower 
+# VECTOR_ENCODER : 'all-MiniLM-L12-v2' # Fast
+# VECTOR_ENCODER : 'all-MiniLM-L6-v2' # Very fast
