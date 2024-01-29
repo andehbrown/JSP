@@ -1,10 +1,8 @@
 pandas
 sentence-transformers
-llama-cpp-python
+# llama-cpp-python
 odfpy
-fitz
 pymupdf
-faiss-gpu
 langchain
 ragas
 datasets
