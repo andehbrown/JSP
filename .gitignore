@@ -1,0 +1,7 @@
+models/
+*.csv
+*.pkl
+*.gguf
+*.xlsx
+*.zip
+.DS_Store
