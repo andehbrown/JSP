@@ -34,12 +34,12 @@ class Generator:
             LLM response to prompt using data        
         '''
 
-        guidance = f'You will be provided with reference text delimited by triple quotes and a question.\
-            Your task is to answer the question using only the provided reference text and to cite the paragraph(s)\
-                used to answer the question. If the reference text does not contain the information needed to answer this\
-                    question then simply write: "No answer to this question has been found in JSPs." If an answer to the question\
-                        is provided, it must be annotated with a citation.'
-        question = f'"""{reference_string}""" Question: {prompt}'
+        if reference_string == "":
+            guidance = "Respond with 'No answer to this question is available within the reference text'"
+            question = "Respond with 'No answer to this question is available within the reference text'"
+        else:
+            guidance = f'You will be provided with reference text delimited by triple quotes and a question. Your task is to answer the question using only the provided reference text and to cite the paragraph(s) used to answer the question. If the reference text does not contain the information needed to answer this question then simply write: "No answer to this question has been found in the provided reference text." If an answer to the question is provided, it must be annotated with a citation.'
+            question = f'"""{reference_string}""" Question: {prompt}'
 
         if platform.system()=='Linux':
             llm_chat = Llama(model_path=self.MODEL,
@@ -97,8 +97,8 @@ class Generator:
             
             # print the references
             print("\nThe following references influenced the response. Contains public sector information\
-                licensed under the Open Government Licence v3.0. You can read the terms of the licence here:\
-                    https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\n")
+            licensed under the Open Government Licence v3.0. You can read the terms of the licence here:\
+            https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\n")
             print("File name",spacer,"Score Page numbers")
             for reference in references:
                 filename = reference[0]

@@ -97,7 +97,7 @@ class Evaluator:
         ragas_score = pd.DataFrame(columns=['question','answer','contexts','answer_relevancy','faithfulness','context_relevancy'])
         num_questions = self.test_data_df.shape[0]
                 
-        for i in range(num_questions):
+        for i in range(151, num_questions):
 
             print(f'Evaluating question-contexts-answer triple {i} of {num_questions}.')
             

@@ -24,18 +24,18 @@ from evaluator import Evaluator # evaluator module
 
 # --------------- Create test data
 
-# config = yaml.safe_load(open('config.yml'))
+config = yaml.safe_load(open('config.yml'))
 
-# if platform.system() == 'Linux':
-#     VECTOR_ENCODER = SentenceTransformer(config['VECTOR_ENCODER'], device='cuda')
-# else:
-#     VECTOR_ENCODER = SentenceTransformer(config['VECTOR_ENCODER'])
+if platform.system() == 'Linux':
+    VECTOR_ENCODER = SentenceTransformer(config['VECTOR_ENCODER'], device='cuda')
+else:
+    VECTOR_ENCODER = SentenceTransformer(config['VECTOR_ENCODER'])
     
-# data = Data(config, VECTOR_ENCODER)
-# retriever = Retriever(config, VECTOR_ENCODER, data)
-# generator = Generator(config)
+data = Data(config, VECTOR_ENCODER)
+retriever = Retriever(config, VECTOR_ENCODER, data)
+generator = Generator(config)
 
-# evaluator = Evaluator(config, retriever, generator)
+evaluator = Evaluator(config, retriever, generator)
 
 # -------------- Review test data
 
@@ -74,3 +74,42 @@ from evaluator import Evaluator # evaluator module
 # faithfulness_result = pd.read_pickle('data/eval/faithfulness.pkl')
 # answer_relevancy_result = pd.read_pickle('data/eval/answer_relevancy.pkl')
 # context_relevancy_result = pd.read_pickle('data/eval/context_relevancy.pkl')
+
+# ------------------ Return similarity scores
+
+# questions = pd.read_csv('eval/questions.csv')
+# questions = questions['question'].dropna()
+# max_distance = 0.85
+# max_distance_question = ""
+
+# for i, question in enumerate(questions):
+#     contexts, references = retriever.get_nearest_neighbours(question)
+#     count = 0
+#     for reference in references:
+#         if reference[2] > max_distance:
+#             count += 1
+#             # max_distance = reference[2]
+#             # max_distance_question = question
+#             # print(question, reference[1], reference[0])
+#     if count > 0:
+#         print(question, count)
+
+#  ------------------ Get page lengths
+
+page_finder = data.jsp_corpus['page_finder']
+
+docs = 0
+total_chars = 0
+x0 = 0
+x1 = 0
+for list in page_finder:
+    if len(list) > 0:
+        docs += 1
+        total_chars = list[-1]
+        num_pages = len(list)
+        doc_avg_chars = total_chars / num_pages
+        total_chars += doc_avg_chars
+
+average_chars = total_chars / docs
+
+print(average_chars)    

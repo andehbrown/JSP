@@ -45,8 +45,8 @@ class Retriever:
         euclidean_distances, nearest_neighbours = self._refine_nearest_neighbours(euclidean_distances, nearest_neighbours)
 
         if len(nearest_neighbours)==0:
-            reference_string = 'There are no references for this prompt so do not attempt to answer it. \
-                You must respond only with: "No answer to this question has been found in JSPs."'
+            # reference_string = 'Do not answer this question as there are is no relevant information in the reference text. You must respond only with: "No answer to this question has been found in the provided reference text.". No other answer is to be provided.'
+            reference_string = ""
         else:
         # Search for index location of text chunk in document and return page number
             
@@ -74,7 +74,7 @@ class Retriever:
 
         return reference_string, references
     
-    def _refine_nearest_neighbours(self, euclidean_distances: np.array, nearest_neighbours: np.array, max_euclidean_distance: float=0.9) -> tuple[np.array, np.array]:
+    def _refine_nearest_neighbours(self, euclidean_distances: np.array, nearest_neighbours: np.array, max_euclidean_distance: float=0.85) -> tuple[np.array, np.array]:
         '''
         Reduces the np arrays of euclidean distances and nearest neighbours to remove entries from both with a euclidean distance
         greater than max_euclidean_distance. Further removes those over 1.1x the minimum to remove outliers.
@@ -86,7 +86,7 @@ class Retriever:
         nearest_neighbours: np.array
             As returned by the FAISS search method - the index of the chunks that are the closest match to the search term
         max_euclidean_distance: float
-            The max value in the returned list. Default 0.9.
+            The max value in the returned list. Default 0.85.
         
         Returns
         -------
@@ -94,16 +94,12 @@ class Retriever:
             All of the euclidean distances less those over max_euclidean_distance
         refined_nearest_neighbours: np.array
             All of the nearest_neigbour text chunks with the same reductions applied
-        '''
-        total_distance = sum(euclidean_distances[0])
-        min_distance = min(euclidean_distances[0])
-        average_distance = total_distance / len(euclidean_distances[0])
-        
+        '''       
         refined_euclidean_distances = []
         refined_nearest_neighbours = []
         
         for i, distance in np.ndenumerate(euclidean_distances[0]):
-            if distance < max_euclidean_distance: # and distance < min_distance * 1.5:
+            if distance < max_euclidean_distance:
                 refined_euclidean_distances.append(euclidean_distances[0][i])
                 refined_nearest_neighbours.append(nearest_neighbours[0][i])
                 
@@ -112,3 +108,4 @@ class Retriever:
         refined_nearest_neighbours = np.array([refined_nearest_neighbours])
         
         return refined_euclidean_distances, refined_nearest_neighbours
+    
