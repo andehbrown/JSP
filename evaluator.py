@@ -6,7 +6,6 @@ from datasets import Dataset # required format for the ragas metrics
 from timeit import default_timer as timer # for timing execution
 import openai # for passing responses to GPT-3.5-Turbo-16k for evaluation
 openai.api_key = os.environ["OPENAI_API_KEY"]
-# openai.api_key='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'
 
 class Evaluator:
     '''
