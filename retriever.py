@@ -41,9 +41,11 @@ class Retriever:
         euclidean_distances, nearest_neighbours = self.jsp_index.search(vector, num_nearest_neighbours)
         reference_string = ""
         references = []
-                
+
+        # Remove chunks with low similarity to prompt
         euclidean_distances, nearest_neighbours = self._refine_nearest_neighbours(euclidean_distances, nearest_neighbours)
 
+        # Return empty string if no relevant chunks
         if len(nearest_neighbours)==0:
             # reference_string = 'Do not answer this question as there are is no relevant information in the reference text. You must respond only with: "No answer to this question has been found in the provided reference text.". No other answer is to be provided.'
             reference_string = ""
@@ -64,7 +66,7 @@ class Retriever:
                 page_num = 0
                 for j, page_start in enumerate(page_finder):
                     if page_start >= chunk_index or j==len(page_finder)-1:
-                        page_num = j + 1
+                        page_num = j
                         break
 
                 # Explanatory text for LLM to say where the reference comes from
@@ -76,8 +78,8 @@ class Retriever:
     
     def _refine_nearest_neighbours(self, euclidean_distances: np.array, nearest_neighbours: np.array, max_euclidean_distance: float=0.85) -> tuple[np.array, np.array]:
         '''
-        Reduces the np arrays of euclidean distances and nearest neighbours to remove entries from both with a euclidean distance
-        greater than max_euclidean_distance. Further removes those over 1.1x the minimum to remove outliers.
+        Reduces the np arrays of euclidean distances and nearest neighbours to remove entries with a euclidean distance
+        greater than max_euclidean_distance.
         
         Parameters
         ----------

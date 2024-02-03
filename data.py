@@ -10,20 +10,28 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter # for splitti
 
 class Data:
     '''
-    Contains reference data for RAG and the methods required to extract this from PDF and ODT files in JSP_FOLDER
+    Contains reference data for RAG and the methods required to extract this from PDF and ODT files in DOCUMENTS
     '''
     
     def __init__(self, config, vector_encoder):
         
         self.config = config
     
-        self.JSP_FOLDER = config['JSP_FOLDER']
-        self.VECTORSTORE_PATH = config['VECTORSTORE_PATH']
-        self.CORPUSSTORE_PATH = config['CORPUSSTORE_PATH']
+        self.DOCUMENTS = config['DOCUMENTS']
         self.MODEL = config['MODEL']
-        self.VECTOR_ENCODER = vector_encoder
+        self.TEMPERATURE = config['TEMPERATURE']
+        self.TOP_P = config['TOP_P']
+        self.NUM_CHUNKS = config['NUM_CHUNKS']
         self.CHUNK_SIZE = config['CHUNK_SIZE']
         self.CHUNK_OVERLAP = self.CHUNK_SIZE / 10
+        self.VECTOR_ENCODER = vector_encoder
+        
+        self.VECTORS_PKL = f'data/text_vectors-chunks={str(self.CHUNK_SIZE)}.pkl'
+        self.CORPUS_PKL = f'data/text_corpus-chunks={str(self.CHUNK_SIZE)}.pkl'
+        self.CHUNKS_PKL = f'data/text_chunks-chunks={str(self.CHUNK_SIZE)}.pkl'
+        self.VECTORS_CSV = f'data/text_vectors-chunks={str(self.CHUNK_SIZE)}.csv'
+        self.CORPUS_CSV = f'data/text_corpus-chunks={str(self.CHUNK_SIZE)}.csv'
+        self.CHUNKS_CSV = f'data/text_chunks-chunks={str(self.CHUNK_SIZE)}.csv'
         
         # Set page margins to ignore headers/footers/printed page numbers/etc.
         self.x0 = 10   # left margin size
@@ -153,18 +161,18 @@ class Data:
 
     def get_jsps(self) -> None:
         '''
-        Retrieves text from PDF and ODT files in JSP_FOLDER and sets it to a dataframe, jsp_corpus_df
+        Retrieves text from PDF and ODT files in DOCUMENTS and sets it to a dataframe, jsp_corpus_df
         The data frame contains the filename, the text in the file, and (for PDF files only) the index of the
         first character on each page
         '''        
         # Check for saved copy of JSP data
-        if os.path.isfile(self.CORPUSSTORE_PATH):
+        if os.path.isfile(self.CORPUS_PKL):
 
-            self.jsp_corpus = pd.read_pickle(self.CORPUSSTORE_PATH)
+            self.jsp_corpus = pd.read_pickle(self.CORPUS_PKL)
             return
         
         # Open the folder
-        folder = os.listdir(self.JSP_FOLDER)
+        folder = os.listdir(self.DOCUMENTS)
         jsp_corpus = []
 
         # for each document add the filename, text contents, and page index to a list
@@ -177,11 +185,11 @@ class Data:
             print(status, f"Currently processing {filename}.                  ", end="\r")
 
             if filename.endswith('.pdf'):
-                text, page_finder = self.get_pdf_text(filename, self.JSP_FOLDER)
+                text, page_finder = self.get_pdf_text(filename, self.DOCUMENTS)
                 jsp_corpus.append([filename, text, page_finder])
                 success += 1
             elif filename.endswith('.odt'):
-                text = self.get_odt_text(filename, self.JSP_FOLDER)
+                text = self.get_odt_text(filename, self.DOCUMENTS)
                 jsp_corpus.append([filename, text, []])
                 success += 1
             else:
@@ -189,9 +197,9 @@ class Data:
                 continue
 
         jsp_corpus_df = pd.DataFrame(jsp_corpus, columns=['filename', 'text', 'page_finder'])
-        jsp_corpus_df.to_pickle(self.CORPUSSTORE_PATH)
+        jsp_corpus_df.to_pickle(self.CORPUS_PKL)
 
-        print(f"Loading complete. Successfully loaded {success} of {len(folder)} files in {self.JSP_FOLDER}.\n\nFailed to load: {failed_files}\n")
+        print(f"Loading complete. Successfully loaded {success} of {len(folder)} files in {self.DOCUMENTS}.\n\nFailed to load: {failed_files}\n")
         self.jsp_corpus = jsp_corpus_df
 
     
@@ -224,7 +232,8 @@ class Data:
                 jsp_chunks.append([jsp['filename'], chunk])
 
         jsp_chunks_df = pd.DataFrame(jsp_chunks, columns=['filename', 'text_chunk'])
-        jsp_chunks_df.to_csv('data/chunks.csv')
+        jsp_chunks_df.to_csv(self.CHUNKS_CSV)
+        jsp_chunks_df.to_pickle(self.CHUNKS_PKL)
 
         return jsp_chunks_df
 
@@ -235,9 +244,9 @@ class Data:
         Saves the vectors in a dataframe, jsp_vectors, containing: filename: str, text_chunk: str, vector: list of 1024 floats
         '''
         # if a vectorstore file is available, load rather than build
-        if os.path.isfile(self.VECTORSTORE_PATH):
+        if os.path.isfile(self.VECTORS_PKL):
 
-            self.jsp_vectors = pd.read_pickle(self.VECTORSTORE_PATH)
+            self.jsp_vectors = pd.read_pickle(self.VECTORS_PKL)
             return
 
         else:
@@ -249,11 +258,11 @@ class Data:
             for i, chunk in jsp_chunks.iterrows():
                 vector = self.VECTOR_ENCODER.encode(chunk['text_chunk'], show_progress_bar=False, normalize_embeddings=True)
                 vectors.append([chunk['filename'], chunk['text_chunk'], vector])
-                print(f"Converting {i+1} of {total}", end='\r')
+                print(f"Embedding text chunk {i+1} of {total} into a vector", end='\r')
 
             vectors_df = pd.DataFrame(vectors, columns=['filename', 'text_chunk', 'vector'])
 
-            vectors_df.to_pickle(self.VECTORSTORE_PATH)
+            vectors_df.to_pickle(self.VECTORS_PKL)
 
             self.jsp_vectors = vectors_df
 

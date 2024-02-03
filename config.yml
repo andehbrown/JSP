@@ -1,21 +1,16 @@
 # Path parameters
 
-VECTORSTORE_PATH : 'data/vectorstore.pkl'
-CORPUSSTORE_PATH : 'data/corpusstore.pkl'
-TEST_QUESTIONS_PATH : 'eval/questions.csv'
-TEST_DATA_PATH : 'eval/testdata.pkl'
-EVAL_RESULTS_PATH : 'eval/evalresults.pkl'
-JSP_FOLDER : 'documents/'
+DOCUMENTS : 'documents/'
 
 # Retriever parameters
 
-CHUNK_SIZE : 1000
-NUM_CHUNKS : 9
+CHUNK_SIZE : 1500
+NUM_CHUNKS : 6
 
 # Generator parameters
 
 TEMPERATURE : 0.2
-TOP_P : 0.1
+TOP_P : 0.95
 MIN_P : 0.05
 
 # Model parameters
