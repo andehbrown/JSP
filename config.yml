@@ -4,8 +4,8 @@ DOCUMENTS : 'documents/'
 
 # Retriever parameters
 
-CHUNK_SIZE : 1500
-NUM_CHUNKS : 6
+CHUNK_SIZE : 3000
+NUM_CHUNKS : 4
 
 # Generator parameters
 
