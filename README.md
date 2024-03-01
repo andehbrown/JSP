@@ -13,4 +13,4 @@ Instructions for running the program
 - If the selected parameters have been used before the reference text chunks and vectors will be loaded from data/; selecting previously unused parameters will initiate chunking and vector embedding for PDF and ODT files in documents/.
 - At the prompt:
   - Type 'e' and hit return to begin evaluation using the parameters in config.yml against the questions in eval/questions.csv. Evaluation results will be saved in eval/ to .csv and .pkl files named according to the parameters used.
-  - Hit return to begin interactive mode where you can ask questions based on the PDF and ODT files in the sub-folder documents.
+  - Hit return to begin interactive mode where you can ask questions based on the PDF and ODT files in documents/.
