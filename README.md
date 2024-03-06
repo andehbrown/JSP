@@ -8,6 +8,7 @@ Additional requirements
 
 Instructions for running the program
 
+- The program will run on any OS but use of GPU is contingent upon using Linux with the Nvidia Cuda toolkit installed. Using an ARM-based Mac CPU is nearly as fast as using a GPU on Linux because of CPU overhead.
 - Choose program parameters in config.yml
 - Run main.py
 - If the selected parameters have been used before the reference text chunks and vectors will be loaded from data/; selecting previously unused parameters will initiate chunking and vector embedding for PDF and ODT files in documents/.
