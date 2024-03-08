@@ -5,6 +5,7 @@ Additional requirements
 - The libraries listed in requirements.txt
 - A conda install with the 'faiss' library (conda install faiss-gpu or faiss-cpu according to your hardware/preferences)
 - The model to be placed in models/: https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/resolve/main/mistral-7b-instruct-v0.2.Q4_K_M.gguf?download=true
+- Using the evaluation mode requires an the environment variable 'OPENAI_API_KEY' to be set to a valid OpenAI API key with access to available credit. Evaluating the provided test set of 156 questions uses approximately $5 of API credit.
 
 Instructions for running the program
 
